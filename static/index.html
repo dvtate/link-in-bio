@@ -160,6 +160,48 @@
 		console.log("Resending confirmation email...");
 	}
 
+	async function login() {
+		// Get fields
+		const emailInp = document.getElementById('login-email');
+		const email = emailInp.value;
+		const pwInp = document.getElementById('login-password');
+		const password = pwInp.value;
+		const msg = document.getElementById('login-message');
+
+		// Request login token from server
+		const r = await post('/api/login', { email, password });
+
+		// User error
+		if (r.status === 401) {
+			if (r.text === 'wrong password') {
+				emailInp.style.border = '2px solid rgba(54, 54, 54, 0.2)';
+				pwInp.style.border = '1px solid red';
+			} else if (r.text == 'wrong email') {
+				emailInp.style.border = '1px solid red';
+			}
+			return;
+		}
+
+		// Server error
+		if (r.status === 500) {
+			msg.style.display = 'block';
+			msg.innerText = 'Sorry, that failed, please try again later';
+			return;
+		}
+
+		// Success!
+		if (r.status === 200) {
+			function setCookie(cname, cvalue, exdays) {
+				const d = new Date();
+				d.setTime(d.getTime() + (exdays*24*60*60*1000));
+				const expires = "expires=" + d.toUTCString();
+				document.cookie = `${cname}=${cvalue};${expires};path=/`;
+			}
+			setCookie("authToken", r.text, 1 / 12);
+			window.location = 'dashboard.html';
+		}
+	}
+
     </script>
 </head>
 
@@ -175,10 +217,10 @@
 		<div id="signInPanel_ID" class="sign_in_panel panel panel_light">
 			<input onclick="toggleClicked()" id="toggle_ID" type="checkbox" class="toggle-btn panel_light">
 			<div class="sign_in">
-				<form action="" method="">
+				<form>
 					<div class="input-group">
 						<div class="input_group_content_wrapper">
-							<input type="email" class="inp">
+							<input type="email" class="inp" id="login-email">
 							<br>
 							<span class="poppinsMedium">Email</span>
 						</div>
@@ -186,18 +228,16 @@
 
 					<div class="input-group">
 						<div class="input_group_content_wrapper">
-							<input type="password" class="inp">
+							<input type="password" class="inp" id="login-password">
 							<br>
 							<span>Password</span>
 							<a id="forgot_pw">Forgot password?</a>
 						</div>
 					</div>
-					<span id="signin-message" class="invalid-message"></span>
+					<span id="login-message" class="invalid-message"></span>
 					<div class="button_wrapper">
 						<div class="button_wrapper_content">
-							<a href="dashboard.html">
-								<input type="button" value="Enter" class="button_primary panel_dark">
-							</a>
+							<input type="button" value="Enter" onclick="login()" class="button_primary panel_dark">
 						</div>
 					</div>
 				</form>

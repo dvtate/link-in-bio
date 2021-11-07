@@ -7,7 +7,7 @@ import Debugger from 'debug';
 const debug = Debugger('core:server:api');
 
 import { Router } from 'express';
-import { getPasswordHash } from './auth';
+import { getPasswordHash, generateToken } from './auth';
 const router = Router();
 
 /**
@@ -24,7 +24,7 @@ async function checkReferralCode(code: string): Promise<boolean | Error | null> 
         return res;
     if (res.length == 0)
         return null;
-    return !!(res[0] as any).active
+    return !!res[0].active;
 }
 
 /**
@@ -113,6 +113,36 @@ router.post('/signup', async (req, res) => {
     res.send(un);
 
     // TODO generate user page
+});
+
+// POST /user/signin
+/*
+    {
+        "email": "dansk99@outlook.com",
+        "password": "dansk99"
+    }
+*/
+router.post('/login', async (req, res) => {
+    const { email, password, stayLoggedIn } = req.body;
+
+    console.log(email, password);
+    try {
+        const [user]: any = await db.queryProm(
+            "SELECT userId, hashedPassword FROM Users WHERE email=?",
+            [ email ], true);
+            console.log(user);
+        if (!user)
+            return res.status(401).send("wrong email");
+
+        if (getPasswordHash(user.userId, password) == user.hashedPassword) {
+            const tok = await generateToken(user.userId, stayLoggedIn);
+            res.send(tok);
+        } else {
+            res.status(401).send("wrong password");
+        }
+    } catch (e) {
+        res.status(500).send(e);
+    }
 });
 
 export default router;

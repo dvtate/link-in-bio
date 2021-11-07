@@ -10,17 +10,23 @@ const { PW_SALT } = process.env;
 
 // creates a login token for user
 // returns token
-export async function generateToken(userId: string, duration?: string) {
 
-    // "stay logged in"
-    duration = duration ? "interval 6 month" : "interval 12 hour";
+
+/**
+ *
+ * @param userId
+ * @param duration
+ * @returns
+ */
+export async function generateToken(userId: string, stayLoggedIn: boolean = false) {
+    const duration = stayLoggedIn ? "interval 6 month" : "interval 12 hour";
 
     for (; ;) {
         // generate token
         // 48 random bytes produces a 64 char of b64 encoded token
         const token = crypto.randomBytes(48).toString("base64");
         // add token to db
-        const error = await db.queryProm(`INSERT INTO authTokens (authToken, userId, authTokenExpiration)
+        const error = await db.queryProm(`INSERT INTO AuthTokens (authToken, userId, authTokenExpiration)
                 VALUES (?, ?, NOW() + ${duration})`,
             [token, userId]);
 
