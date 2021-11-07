@@ -9,6 +9,47 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 <script>
+        // make a post request
+        async function post(endpoint, body) {
+            try {
+                const resp = await fetch(endpoint, {
+                    method: 'POST',
+                    mode: 'cors',
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(body)
+                });
+                return {
+                    status: resp.status,
+                    text: await resp.text(),
+                };
+            } catch (e) {
+                throw e;
+            }
+        }
+
+        // make a get request
+        async function get(endpoint) {
+            try {
+                const resp = await fetch(endpoint, {
+                    method: 'GET',
+                    mode: 'cors',
+                    headers: {
+                      'Accept': 'application/json',
+                      'Content-Type': 'application/json',
+                    },
+                });
+
+                return {
+                    status: resp.status,
+                    text: await resp.text(),
+                };
+            } catch (e) {
+                throw e;
+            }
+        }
 
     function toggleClicked() {
       var toggleState = document.getElementById("toggle_ID");
@@ -19,22 +60,93 @@
       }
     }
 
-	function validateRefCode() {
+	async function validateRefCode() {
 		console.log("Validating referral code...");
-		/* Check for referral code in database */
-		document.getElementById("join_ID").style.left="0%";
-		document.getElementById("join_ID").style.opacity="1";
-		document.getElementById("referral_ID").style.opacity="0";
-		document.getElementById("signInPanel_ID").classList.add('sign_in_panel_expanded');
-		console.log("Valid code.");
+
+		// Check code validity from server
+		const rc = document.getElementById("referral-input").value;
+		let check;
+		try {
+			check = await get(`/api/refcode/check/${rc}`);
+		} catch (e) {
+			check = e;
+		}
+
+		// Handle response
+		const failMsg = document.getElementById('referral-message');
+		if (check.status !== 200) {
+			// Server error
+			failMsg.style.display = 'block';
+			failMsg.innerText = "Sorry, that failed. Please try again later";
+			console.error('failed', check);
+			return;
+		} else if (['invalid', 'expired'].includes(check.text)) {
+			// Invalid or expired code
+			failMsg.style.display = 'block';
+			failMsg.innerText = "Sorry, that code is " + check.text;
+			return;
+		} else {
+			console.log('code valid: ', check.text);
+			// Code is presumably valid
+			document.getElementById("join_ID").style.left="0%";
+			document.getElementById("join_ID").style.opacity="1";
+			document.getElementById("referral_ID").style.opacity="0";
+			document.getElementById("signInPanel_ID").classList.add('sign_in_panel_expanded');
+		}
 	}
 
-	function joinClicked() {
+	function checkSignupInput() {
+		const email = document.getElementById('signup-email').value;
+		const username = document.getElementById('signup-username').value.toLowerCase();
+		const password1 = document.getElementById('signup-password1').value;
+		const password2 = document.getElementById('signup-password2').value;
+
+		// Check password strength
+		if (!password1.match(/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!#$%&? "*,@]).*$/)) {
+			document.getElementById('password1-indicator').style.backgroundColor = '#DD4B4B';
+			document.getElementById('strength-text').innerText = 'needs'
+				+ !password1.match(/[a-z]/) ? 'a lower-case letter'
+				: !password1.match(/[A-Z]/) ? 'an upper-case letter'
+				: !password1.match(/\d/) ? 'a number'
+				: 'a special character';
+			document.getElementById('password1-checker').style.display = 'block';
+			return false;
+		}
+		document.getElementById('password1-indicator').style.backgroundColor = '#81C16E';
+		document.getElementById('strength-text').innerText = 'Good';
+
+		// Check passwords match
+		if (password1 !== password2) {
+			document.getElementById('match-text').innerText = "Passwords don't match!";
+			document.getElementById('password2-indicator').style.backgroundColor = '#81C16E';
+			document.getElementById('password1-checker').style.display = 'block';
+			return false;
+		}
+		document.getElementById('match-text').innerText = 'Matching!';
+		document.getElementById('password2-indicator').style.backgroundColor = '#81C16E';
+		return true;
+	}
+
+	async function joinClicked() {
 		console.log("Checking user input...");
 		/* Required fields: first name, email, password, confirm password*/
 		/* Optional field(s): last name */
+		const refcode = document.getElementById('referral-input').value;
+		const email = document.getElementById('signup-email').value;
+		const username = document.getElementById('signup-username').value.toLowerCase();
+		const password1 = document.getElementById('signup-password1').value;
+		const password2 = document.getElementById('signup-password2').value;
+
 		/* Password requirements: 1 upper-case letter, one lower-case letter, one number, one special character*/
-			/* Special characters: !,#,$,%,&,*,", etc. */
+		/* Special characters: !,#,$,%,&,*,", etc. */
+		const acct = await post('/api/signup', { refcode, email, username, password: password2 });
+		if (acct.status !== 200) {
+			document.getElementById('signup-message').innerText = acct.text;
+			document.getElementById('signup-message').style.display = 'block';
+			return;
+		}
+		// window.location.reload();
+
 		document.getElementById("signInPanel_ID").classList.remove('sign_in_panel_expanded');
 		document.getElementById("signInPanel_ID").classList.add('sign_in_panel_shrunk');
 		document.getElementById("join_ID").style.left="-120%";
@@ -45,7 +157,7 @@
 	}
 
 	function resendConfirmationEmail() {
-		console.log("Resending confirmation email...")
+		console.log("Resending confirmation email...");
 	}
 
     </script>
@@ -65,7 +177,7 @@
 			<div class="sign_in">
 				<form action="" method="">
 					<div class="input-group">
-						<div class="input_group_content_wrapper" style="">
+						<div class="input_group_content_wrapper">
 							<input type="email" class="inp">
 							<br>
 							<span class="poppinsMedium">Email</span>
@@ -73,14 +185,14 @@
 					</div>
 
 					<div class="input-group">
-						<div class="input_group_content_wrapper" style="">
+						<div class="input_group_content_wrapper">
 							<input type="password" class="inp">
 							<br>
 							<span>Password</span>
-							<span id="forgot_pw">Forgot password?</span>
+							<a id="forgot_pw">Forgot password?</a>
 						</div>
 					</div>
-
+					<span id="signin-message" class="invalid-message"></span>
 					<div class="button_wrapper">
 						<div class="button_wrapper_content">
 							<a href="dashboard.html">
@@ -95,11 +207,12 @@
 				<form action="" method="">
 					<div class="input-group">
 						<div class="input_group_content_wrapper" style="width: 420px;">
-							<input type="email" class="inp">
+							<input type="email" id="referral-input" class="inp">
 							<br>
 							<span class="poppinsMedium">Referral code</span>
 						</div>
 					</div>
+					<span id="referral-message" class="invalid-message"></span>
 					<div class="button_wrapper">
 						<div class="button_wrapper_content">
 							<input onclick="validateRefCode()" type="button" value="Next" class="button_primary panel_dark">
@@ -109,18 +222,18 @@
 			</div>
 
 			<div class="join" id="join_ID">
-				<form action="/api/signup" method="POST">
+				<form>
 					<div class="join_left_column">
 						 <div class="input-group">
 							<div class="input_group_content_wrapper" style="width: 420px;">
-							<input type="text" class="inp" name="username">
+							<input type="text" class="inp" id="signup-username" onchange="checkSignupInput()" />
 							<br>
 							<span>Name</span>
 							</div>
 						</div>
 						<div class="input-group">
 							<div class="input_group_content_wrapper" style="width: 420px;">
-								<input type="email" class="inp" name="email">
+								<input type="email" class="inp" id="signup-email" onchange="checkSignupInput()" />
 								<br>
 								<span>Email</span>
 							</div>
@@ -129,28 +242,34 @@
 					<div class="join_right_column">
 						<div class="input-group">
 							<div class="input_group_content_wrapper" style="width: 420px;">
-								<input type="password" class="inp">
+								<input type="password" id="signup-password1" class="inp" onchange="checkSignupInput()" />
 								<br>
-								<span>Password</span> <span class="input_checker">Strength</span>
-								<div class="indicator_dot" style="background-color: #DD4B4B;"></div>
+								<span>Password</span>
+								<span id="password1-checker">
+									<span class="input_checker" id="strength-text">Strength</span>
+									<div class="indicator_dot" id="password1-indicator" style="background-color: #DD4B4B;"></div>
+								</span>
 							</div>
 						 </div>
 						<div class="input-group">
 							<div class="input_group_content_wrapper" style="width: 420px;">
-								<input type="password" class="inp" name="password">
+								<input type="password" class="inp" id="signup-password2" onchange="checkSignupInput()" />
 								<br>
-								<span>Confirm password</span> <span class="input_checker">Match!</span>
-								<div class="indicator_dot" style="background-color: #81C16E;"></div>
+								<span>Confirm password</span>
+								<span id="password2-checker">
+									<span class="input_checker" id="match-text">Match!</span>
+									<div class="indicator_dot" id="password2-indicator" style="background-color: #81C16E;"></div>
+								</span>
 							</div>
 						</div>
 					</div>
 					<div class="button_wrapper">
 						<div class="button_wrapper_content">
 							<input onclick="joinClicked()" type="button" value="Join" class="button_primary panel_dark">
-							<input type="submit" value="submit" class="button_primary panel_dark">
-
 						</div>
 					</div>
+					<br/>
+					<span id="signup-message" class="invalid-message"></span>
 				</form>
 			</div>
 

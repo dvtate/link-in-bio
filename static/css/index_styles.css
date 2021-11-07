@@ -49,6 +49,7 @@ body {
   position: absolute;
   right: 18px;
   text-decoration: underline;
+  color: black;
 }
 .input_checker {
   position: absolute;
@@ -162,4 +163,14 @@ body {
 .name-toggle-btn:checked:before {
   left: 50%;
   content: "Business";
+}
+
+.invalid-message {
+  color: red;
+  display: none;
+}
+
+#password1-checker,
+#password2-checker {
+  display: none;
 }

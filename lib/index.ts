@@ -12,8 +12,9 @@ const debug = Debugger('core:server');
 
 // Set up express server
 import express from 'express';
+import {json} from 'body-parser';
 const app = express();
-app.use(express.urlencoded({ extended: true }));
+app.use(json());
 app.set('trust proxy', 1);
 
 // Add routes
