@@ -1,0 +1,144 @@
+/* FONT WEIGHTS */	
+
+.poppinsMedium {
+	font-family: 'Poppins', sans-serif;
+	font-weight: 500;
+}
+	
+.poppinsSemiBold {
+	font-family: 'Poppins', sans-serif;
+	font-weight: 600;
+}
+	
+.poppinsBold {
+	font-family: 'Poppins', sans-serif;
+	font-weight: 700;
+}
+
+/* VISUALS */
+
+.panel_light {
+  background-color: #E8EBED;
+  color: #363636;
+  box-shadow: -10px -10px 16px rgba(255, 255, 255, 0.4), 10px 10px 16px rgba(121, 121, 121, 0.4);
+}
+
+.panel_dark {
+  background-color: #363636;
+  color: #E8EBED;
+  box-shadow: -10px -10px 16px rgba(255, 255, 255, 0.4), 10px 10px 16px rgba(121, 121, 121, 0.4);
+}
+
+.panel {
+  border-radius: 14px;
+}
+
+.device_panel {
+  border-radius: 20px;
+}
+
+/* BUTTONS */
+
+.nav_back_button {
+  position: absolute;
+  background-color: rgba(54, 54, 54, 0.1);
+  bottom: 4px;
+  border-radius: 50%;
+  height: 50px;
+  width: 50px;
+  padding: 15px 15px;
+  transition: 0.3s;
+}
+
+.nav_back_button:hover {
+  transform: scale(1.1);
+  transition: 0.3s;
+}
+
+.button_primary {
+  /* position: absolute; */
+  width: 166px;
+  height: 44px;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button_primary_nav {
+  width: 166px;
+  height: 44px;
+  border: none;
+  border-radius: 14px;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.button_wrapper {
+  display: inline-block;
+  position: absolute;
+  height: 124px;
+  width: 100%;
+  bottom: 0;
+  text-align: center;
+}
+
+.button_wrapper_content {
+  display: inline-block;
+  margin: 15px;
+  padding-top: 20px;
+}
+
+.circle_button {
+  position: absolute;
+  right: 0;
+  height: 72px;
+  width: 72px;
+  border-radius: 50px;
+  transition: 0.2s;
+  transform-origin: 100% 50%;
+  border: none;
+  cursor: pointer;
+}
+
+.circle_button + .device_view_selection:hover {
+  transition: 0.2s;
+  width: 200px;
+}
+
+
+/* INPUT FIELDS */
+
+.input-group {
+	margin-bottom: 30px;
+}
+
+.input_group_content_wrapper {
+  position: relative;
+  left: 50%;
+  transform: translate(-50%);
+  height: auto;
+  width: 420px;
+}
+
+.input-group span {
+	margin-left: 18px;
+  	color: #363636;
+	font-family: 'Poppins', sans-serif;
+	font-weight: 500;
+	
+}
+
+.input-group .inp {
+  height: 44px;
+  width: 100%;
+  border-radius: 32px;
+  border: 2px solid rgba(54, 54, 54, 0.2);
+  background-color: #E8EBED;
+  margin-top: 0px;
+  margin-bottom: 10px;
+  text-indent: 18px;
+  font-size: 18px;
+}

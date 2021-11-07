@@ -1,0 +1,165 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins';
+  outline: none;
+}
+body {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #E8EBED;
+}
+.sign_in_panel {
+  position: relative;
+  height: 480px;
+  width: 480px;
+  overflow: hidden;
+  transition: 0.4s;
+}
+.sign_in {
+  position: absolute;
+  left: 50%;
+  top: 144px;
+  bottom: 0;
+  transform: translate(-50%);
+  width: 100%;
+  height: auto;
+  transition: 0.4s;
+}
+.referral_screener {
+  position: absolute;
+  top: 200px;
+  left: 120%;
+  transition: 0.4s;
+  bottom: 0;
+}
+.sign_in_panel_expanded {
+  height: 480px;
+  width: 1040px;
+  transition: 0.4s;
+}
+.sign_in_panel_shrunk {
+  height: 295px;
+  width: 480px;
+}
+#forgot_pw {
+  position: absolute;
+  right: 18px;
+  text-decoration: underline;
+}
+.input_checker {
+  position: absolute;
+  right: 42px;
+  font-style: italic;
+}
+.indicator_dot {
+  position: absolute;
+  bottom: 4px;
+  right: 18px;
+  height: 16px;
+  width: 16px;
+  border-radius: 8px;
+}
+.join {
+  position: absolute;
+  left: 120%;
+  top: 144px;
+  bottom: 0;
+  width: 100%;
+  height: auto;
+  transition: 0.4s;
+  display: grid;
+}
+.join_editable {
+  left: 0%;
+}
+.join_left_column {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+}
+.join_right_column {
+  position: absolute;
+  width: 50%;
+  height: 100%;
+  left: 50%;
+}
+#checkEmailMessage {
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translate(-50%);
+  transition: 0.4s;
+  bottom: 0;
+  display: none;
+}
+.toggle-btn {
+  position: absolute;
+  height: 44px;
+  width: 200px;
+  border-radius: 100px;
+  left: calc(50% - 100px);
+  top: 40px;
+  -webkit-appearance: none;
+}
+.toggle-btn:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 50%;
+  border-radius: 100px;
+  background-color: #363636;
+  color: white;
+  content: 'Sign in';
+  font-size: 14px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  transition: 0.4s;
+}
+.toggle-btn:checked:before {
+  left: 50%;
+  content: "Join";
+}
+.toggle-btn:checked + .sign_in {
+  left: -101%;
+}
+.toggle-btn:checked + .sign_in + .referral_screener {
+  left: 50%;
+  transform: translate(-50%);
+}
+/* XXXXXXXXXXXXX */
+.name-toggle-btn {
+  position: absolute;
+  height: 44px;
+  width: 200px;
+  border-radius: 100px;
+  -webkit-appearance: none;
+  border: 2px solid rgba(54, 54, 54, 0.2);
+  background-color: #E8EBED;
+}
+.name-toggle-btn:before {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 50%;
+  box-shadow: -10px -10px 16px rgba(255, 255, 255, 0.4), 10px 10px 16px rgba(121, 121, 121, 0.4);
+  border-radius: 100px;
+  background-color: #363636;
+  color: white;
+  content: 'Individual';
+  font-size: 14px;
+  font-weight: 700;
+  display: grid;
+  place-items: center;
+  transition: 0.4s;
+}
+.name-toggle-btn:checked:before {
+  left: 50%;
+  content: "Business";
+}

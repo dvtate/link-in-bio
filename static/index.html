@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>Index</title>
+<link rel="stylesheet" type="text/css" href="css/main_styles.css">
+<link rel="stylesheet" type="text/css" href="css/index_styles.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+
+    function toggleClicked() {
+      var toggleState = document.getElementById("toggle_ID");
+      if (toggleState.checked === false) {
+        document.getElementById("signInPanel_ID").classList.remove('sign_in_panel_expanded');
+		document.getElementById("join_ID").style.left="120%";
+		document.getElementById("referral_ID").style.opacity="1";
+      }
+    }
+
+	function validateRefCode() {
+		console.log("Validating referral code...");
+		/* Check for referral code in database */
+		document.getElementById("join_ID").style.left="0%";
+		document.getElementById("join_ID").style.opacity="1";
+		document.getElementById("referral_ID").style.opacity="0";
+		document.getElementById("signInPanel_ID").classList.add('sign_in_panel_expanded');
+		console.log("Valid code.");
+	}
+
+	function joinClicked() {
+		console.log("Checking user input...");
+		/* Required fields: first name, email, password, confirm password*/
+		/* Optional field(s): last name */
+		/* Password requirements: 1 upper-case letter, one lower-case letter, one number, one special character*/
+			/* Special characters: !,#,$,%,&,*,", etc. */
+		document.getElementById("signInPanel_ID").classList.remove('sign_in_panel_expanded');
+		document.getElementById("signInPanel_ID").classList.add('sign_in_panel_shrunk');
+		document.getElementById("join_ID").style.left="-120%";
+		document.getElementById("join_ID").style.opacity="0";
+		document.getElementById("checkEmailMessage").style.display="block";
+		document.getElementById("toggle_ID").style.display="none"
+		console.log("Welcome!");
+	}
+
+	function resendConfirmationEmail() {
+		console.log("Resending confirmation email...")
+	}
+
+    </script>
+</head>
+
+<body>
+	<div>
+
+		<!-- LOGO -->
+		<a href="index.html">
+			<img src="img/platform_logo@2x.png" alt="Platform logo" style="width:60px; display:block; margin:auto; padding-bottom: 60px;">
+		</a>
+
+
+		<div id="signInPanel_ID" class="sign_in_panel panel panel_light">
+			<input onclick="toggleClicked()" id="toggle_ID" type="checkbox" class="toggle-btn panel_light">
+			<div class="sign_in">
+				<form action="" method="">
+					<div class="input-group">
+						<div class="input_group_content_wrapper" style="">
+							<input type="email" class="inp">
+							<br>
+							<span class="poppinsMedium">Email</span>
+						</div>
+					</div>
+
+					<div class="input-group">
+						<div class="input_group_content_wrapper" style="">
+							<input type="password" class="inp">
+							<br>
+							<span>Password</span>
+							<span id="forgot_pw">Forgot password?</span>
+						</div>
+					</div>
+
+					<div class="button_wrapper">
+						<div class="button_wrapper_content">
+							<a href="dashboard.html">
+								<input type="button" value="Enter" class="button_primary panel_dark">
+							</a>
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div id="referral_ID" class="referral_screener">
+				<form action="" method="">
+					<div class="input-group">
+						<div class="input_group_content_wrapper" style="width: 420px;">
+							<input type="email" class="inp">
+							<br>
+							<span class="poppinsMedium">Referral code</span>
+						</div>
+					</div>
+					<div class="button_wrapper">
+						<div class="button_wrapper_content">
+							<input onclick="validateRefCode()" type="button" value="Next" class="button_primary panel_dark">
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div class="join" id="join_ID">
+				<form action="/api/signup" method="POST">
+					<div class="join_left_column">
+						 <div class="input-group">
+							<div class="input_group_content_wrapper" style="width: 420px;">
+							<input type="text" class="inp" name="username">
+							<br>
+							<span>Name</span>
+							</div>
+						</div>
+						<div class="input-group">
+							<div class="input_group_content_wrapper" style="width: 420px;">
+								<input type="email" class="inp" name="email">
+								<br>
+								<span>Email</span>
+							</div>
+						</div>
+					</div>
+					<div class="join_right_column">
+						<div class="input-group">
+							<div class="input_group_content_wrapper" style="width: 420px;">
+								<input type="password" class="inp">
+								<br>
+								<span>Password</span> <span class="input_checker">Strength</span>
+								<div class="indicator_dot" style="background-color: #DD4B4B;"></div>
+							</div>
+						 </div>
+						<div class="input-group">
+							<div class="input_group_content_wrapper" style="width: 420px;">
+								<input type="password" class="inp" name="password">
+								<br>
+								<span>Confirm password</span> <span class="input_checker">Match!</span>
+								<div class="indicator_dot" style="background-color: #81C16E;"></div>
+							</div>
+						</div>
+					</div>
+					<div class="button_wrapper">
+						<div class="button_wrapper_content">
+							<input onclick="joinClicked()" type="button" value="Join" class="button_primary panel_dark">
+							<input type="submit" value="submit" class="button_primary panel_dark">
+
+						</div>
+					</div>
+				</form>
+			</div>
+
+			<div id="checkEmailMessage">
+				<p style="width: 400px; text-align: center;">Check your inbox to verify your email and complete account setup.</p>
+
+				<p style="width: 400px; text-align: center; padding-top: 70px;">Can't find the email?</p>
+
+				<div class="button_wrapper">
+					<div class="button_wrapper_content">
+						<input onclick="resendConfirmationEmail()" type="button" value="Resend" class="button_primary panel_light">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
