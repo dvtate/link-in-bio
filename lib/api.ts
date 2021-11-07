@@ -1,4 +1,6 @@
 import crypto from 'crypto';
+import fs from 'fs';
+
 import validator from 'validator';
 
 import * as db from './db';
@@ -112,6 +114,8 @@ router.post('/signup', async (req, res) => {
     // On success send user their new username
     res.send(un);
 
+    fs.mkdirSync(`./pages/${un}`);
+    fs.writeFileSync(`./pages/${un}/index.html`, `This is a demo homepage for user ${username} generated on ${new Date()}`);
     // TODO generate user page
 });
 

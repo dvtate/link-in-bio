@@ -6,7 +6,7 @@
   "scripts": {
     "start": "DEBUG=core:* NODE_ENV=development nodemon lib/index.ts",
     "build": "tsc",
-    "prod": "DEBUG=core:* NODE_ENV=production node dist/lib/index.js"
+    "prod": "DEBUG=core:* NODE_ENV=production node dist/index.js"
   },
   "repository": {
     "type": "git",

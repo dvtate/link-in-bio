@@ -104,11 +104,11 @@
 		// Check password strength
 		if (!password1.match(/^.*(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!#$%&? "*,@]).*$/)) {
 			document.getElementById('password1-indicator').style.backgroundColor = '#DD4B4B';
-			document.getElementById('strength-text').innerText = 'needs'
-				+ !password1.match(/[a-z]/) ? 'a lower-case letter'
+			document.getElementById('strength-text').innerText = 'needs '+ (
+				 !password1.match(/[a-z]/) ? 'a lower-case letter'
 				: !password1.match(/[A-Z]/) ? 'an upper-case letter'
 				: !password1.match(/\d/) ? 'a number'
-				: 'a special character';
+				: 'a special character');
 			document.getElementById('password1-checker').style.display = 'block';
 			return false;
 		}
